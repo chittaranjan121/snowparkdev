@@ -1,7 +1,7 @@
 import sys
 import os
 
-# Path to snowpark project
+# Path to snowpark projects
 project_dir = sys.argv[1]
 os.chdir(project_dir)
 
