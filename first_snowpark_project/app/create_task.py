@@ -42,7 +42,7 @@ tasks = root.databases["demo"].schemas['demo_db'].tasks
 
 # create dag  
 with DAG("my_dag",schedule=timedelta(days=1),use_func_return_value=True,stage_location='@dev_deployment',warehouse="compute_wh") as dag:
-  dag_task_1 =  DAGTask("my_hello_task",StoredProcedureCall(procedures.hello_procedure,args=["pradeep"],\
+  dag_task_1 =  DAGTask("my_hello_task",StoredProcedureCall(procedures.hello_procedure,args=["chittaranjan121"],\
     input_types=[StringType()],return_type=StringType(), packages=["snowflake-snowpark-python"],imports=['@dev_deployment/my_snowpark_project/app.zip'],\
     stage_location='@dev_deployment'),warehouse="compute_wh")
   
@@ -99,7 +99,7 @@ with DAG("my_dag_task_branch",schedule=timedelta(days=1),stage_location='@dev_de
   
   dag_task_branch >> [dag_task_3,dag_task_4]
   
-  schema = root.databases["demo"].schemas["demo-db"]
+  schema = root.databases["demo"].schemas["demo_db"]
   dag_op = DAGOperation(schema)
   dag_op.deploy(dag,CreateMode.or_replace)
 
