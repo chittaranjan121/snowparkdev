@@ -1,16 +1,30 @@
+name: Deploy Snowpark Apps
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install snowflake-cli-labs
+          pip install -r requirements.txt
 
+      # 🔑 REQUIRED STEP — THIS FIXES "Connection default is not configured"
       - name: Configure SnowCLI connection
         run: |
           snow connection add default \
