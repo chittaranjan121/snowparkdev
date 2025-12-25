@@ -8,11 +8,12 @@ print("🔧 Building Snowpark project...")
 if os.system("snow snowpark build") != 0:
     raise RuntimeError("❌ Build failed")
 
-print("📂 Verifying artifacts...")
-os.system("ls -R artifacts")
-
 print("🚀 Deploying Snowpark project...")
-if os.system("snow snowpark deploy --replace") != 0:
+deploy_cmd = """
+snow snowpark deploy --replace --temporary-connection
+"""
+
+if os.system(deploy_cmd) != 0:
     raise RuntimeError("❌ Deploy failed")
 
 print("✅ Snowpark deployment completed successfully")
