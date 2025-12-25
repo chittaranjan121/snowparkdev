@@ -37,7 +37,7 @@ print(root)
 my_task = Task("my_task",StoredProcedureCall(procedures.hello_procedure,\
     stage_location="@dev_deployment"),warehouse="compute_wh",schedule=timedelta(hours=1))
 
-tasks = root.databases["demo_db"].schemas['public'].tasks
+tasks = root.databases["demo"].schemas['demo_db'].tasks
 #tasks.create(my_task)
 
 # create dag  
@@ -60,7 +60,7 @@ with DAG("my_dag",schedule=timedelta(days=1),use_func_return_value=True,stage_lo
   
   dag_task_1 >> dag_task_2 >> [dag_task_3,dag_task_4]
   
-  schema = root.databases["demo_db"].schemas["public"]
+  schema = root.databases["demo"].schemas["demo_db"]
   dag_op = DAGOperation(schema)
   dag_op.deploy(dag,CreateMode.or_replace)
   
@@ -99,7 +99,7 @@ with DAG("my_dag_task_branch",schedule=timedelta(days=1),stage_location='@dev_de
   
   dag_task_branch >> [dag_task_3,dag_task_4]
   
-  schema = root.databases["demo_db"].schemas["public"]
+  schema = root.databases["demo"].schemas["demo-db"]
   dag_op = DAGOperation(schema)
   dag_op.deploy(dag,CreateMode.or_replace)
 
