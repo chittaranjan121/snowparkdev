@@ -1,18 +1,14 @@
 import sys
 import os
+import yaml
 
-# Path to snowpark projects
-project_dir = sys.argv[1]
-os.chdir(project_dir)
+# os.system(f"conda init")
+# os.system(f"conda activate snowpark")
+directory_path= sys.argv[1]
 
-print("🔧 Building Snowpark project...")
-build_status = os.system("snow snowpark build --connection default")
-if build_status != 0:
-    raise RuntimeError("❌ Build failed")
 
-print("🚀 Deploying Snowpark project...")
-deploy_status = os.system("snow snowpark deploy --replace --connection default")
-if deploy_status != 0:
-    raise RuntimeError("❌ Deploy failed")
-
-print("✅ Snowpark deployment completed successfully")
+os.chdir(f"{directory_path}")
+# Make sure all 6 SNOWFLAKE_ environment variables are set
+# SnowCLI accesses the passowrd directly from the SNOWFLAKE_PASSWORD environmnet variable
+os.system(f"snow snowpark build")
+os.system(f"snow snowpark deploy --replace --temporary-connection --account $SNOWFLAKE_ACCOUNT --user $SNOWFLAKE_USER --role $SNOWFLAKE_ROLE --warehouse $SNOWFLAKE_WAREHOUSE --database $SNOWFLAKE_DATABASE")  
