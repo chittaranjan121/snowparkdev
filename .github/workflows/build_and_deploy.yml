@@ -31,7 +31,8 @@ jobs:
       # 4️⃣ ✅ ADD THIS STEP — Configure SnowCLI connection
       - name: Configure Snowflake CLI connection
         run: |
-          snow connection add default \
+          snow connection add  \
+            --name default \
             --account "$SNOWFLAKE_ACCOUNT" \
             --user "$SNOWFLAKE_USER" \
             --password "$SNOWFLAKE_PASSWORD" \
