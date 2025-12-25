@@ -1,9 +1,12 @@
 name: Deploy Snowpark Apps
 
+# Controls when the action will run. 
 on:
   push:
     branches:
       - dev
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -11,31 +14,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup Python
+        with:
+          repository: pradeepetl/snowparkdev
+          #path: dev
+          ref: dev
+          
+      - name: Setup Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          pip install snowflake-cli-labs
-          pip install -r requirements.txt
+      - name: Install Python packages
+        run: pip install -r requirements.txt
 
-      # 🔑 REQUIRED STEP — THIS FIXES "Connection default is not configured"
-      - name: Configure SnowCLI connection
-        run: |
-          snow connection add  \
-            --connection-name default \
-            --account "${SNOWFLAKE_ACCOUNT}" \
-            --username "${SNOWFLAKE_USER}" \
-            --password "${SNOWFLAKE_PASSWORD}" \
-            --rolename "${SNOWFLAKE_ROLE}" \
-            --warehouse "${SNOWFLAKE_WAREHOUSE}" \
-            --dbname "${SNOWFLAKE_DATABASE}" \
-            --schema "${SNOWFLAKE_SCHEMA}"
+      - name: Deploy Snowpark apps
+        working-directory: first_snowpark_project
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT_DEV }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER_DEV }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD_DEV }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE_DEV }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE_DEV }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE_DEV }}
+        run: python deploy_snowpark_app.py $GITHUB_WORKSPACE/first_snowpark_project
+      
+      - name: Deploy Snowpark tasks
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT_DEV }}
           SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER_DEV }}
@@ -44,8 +50,5 @@ jobs:
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE_DEV }}
           SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE_DEV }}
           SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA_DEV }}
-
-      - name: Build & Deploy Snowpark
-        working-directory: first_snowpark_project
-        run: |
-          python deploy_snowpark_app.py $GITHUB_WORKSPACE/first_snowpark_project
+        working-directory: first_snowpark_project/app
+        run: python create_task.py
