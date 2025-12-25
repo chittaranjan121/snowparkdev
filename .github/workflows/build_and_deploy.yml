@@ -35,6 +35,7 @@ jobs:
             --connection-name default \
             --account "$SNOWFLAKE_ACCOUNT" \
             --host "$SNOWFLAKE_ACCOUNT.snowflakecomputing.com" \
+            --port 443 \
             --username "$SNOWFLAKE_USER" \
             --password "$SNOWFLAKE_PASSWORD" \
             --rolename "$SNOWFLAKE_ROLE" \
